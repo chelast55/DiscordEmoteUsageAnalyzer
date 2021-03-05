@@ -2,7 +2,10 @@ import csv
 import os
 import re
 
-# collect desired emotes
+
+def run():
+
+    # collect desired emotes
     emotes = []
     with open('res/emotes.csv') as emote_file:
         emote_reader = csv.reader(emote_file)
