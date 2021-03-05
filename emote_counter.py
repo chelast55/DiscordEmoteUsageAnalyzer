@@ -3,7 +3,7 @@ import os
 import re
 
 
-def run():
+def run(input, output, filename):
 
     # collect desired emotes
     emotes = []
@@ -14,9 +14,9 @@ def run():
 
     # import discord channel text files
     text_channels = []
-    for file in os.listdir('in'):
+    for file in os.listdir(input):
         if file.endswith(".txt"):
-            with open("in/" + file, "r", encoding="utf8") as text_file:
+            with open(input + file, "r", encoding="utf8") as text_file:
                 text_channels += [text_file.read()]
 
     # count emote uses
@@ -30,7 +30,7 @@ def run():
             react_uses[e] += len(re.findall(in_react, text_channels[t]))
 
     # print csv (usage count)
-    with open('out/emote_usage.csv', 'w+', newline='') as emote_usage_file:
+    with open(output + filename, 'w+', newline='') as emote_usage_file:
         emote_usage_writer = csv.writer(emote_usage_file, delimiter=';')
         emote_usage_writer.writerow(['emote'] + ['text_uses'] + ['react_uses'] + ['total_uses'])
         for e in range(0, len(emotes)):
