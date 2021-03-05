@@ -3,6 +3,9 @@ import re
 
 split_directory = 'split/'
 
+numerical_month = {"Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06",
+                   "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
+
 
 def run(input):
     # import discord channel text files
@@ -34,7 +37,6 @@ def run(input):
             text_channel_recombined += [messages_this_month]
         text_channels_recombined += [text_channel_recombined]
 
-    # TODO: Map from shortened months to nurmerical for better file order
     # write split text channels to individual .txt files (by month)
     create_filepath(split_directory)
     for d in range(0, len(text_channels_recombined)):
@@ -42,10 +44,16 @@ def run(input):
         create_filepath(split_directory + original_file_name[:(len(original_file_name) - 4)])
         for month_of_channel in text_channels_recombined[d]:
             with open(split_directory + original_file_name[:(len(original_file_name) - 4)] + '/'
-                      + month_of_channel[:6] + "_" + original_file_name, "w", encoding="utf8") as output_file:
+                      + reformat_date(month_of_channel[:6]) + "_" + original_file_name, "w",
+                      encoding="utf8") as output_file:
                 output_file.write(month_of_channel)
 
 
 def create_filepath(filepath):
     if not os.path.exists(filepath):
         os.mkdir(filepath)
+
+
+# reformat date from 'Mmm-YY' to 'YY-MM'
+def reformat_date(date):
+    return str(date[len(date) - 2:len(date)]) + "-" + str(numerical_month.get(date[:3]))
