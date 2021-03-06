@@ -40,13 +40,16 @@ def run_vanilla_check(input_directory, output_directory, filename, include_vanil
     for e in range(0, len(emotes)):
         # unicode emotes are never surrounded by colons in discord-chat-exporter's .txt format
         if include_vanilla_emotes and len(emotes[e]) == 1:
-            in_text = re.compile(rf"{emotes[e]}")
+            in_text = re.compile(rf"{re.escape(emotes[e])}")
         else:
-            in_text = re.compile(rf":{emotes[e]}:")
-        in_react = re.compile(rf"{{Reactions}}\n.*{emotes[e]} ")
+            in_text = re.compile(rf":{re.escape(emotes[e])}:")
+        in_react = re.compile(rf"{{Reactions}}\n.*{re.escape(emotes[e])} ")
         for t in range(0, len(text_channels)):
-            text_uses[e] += len(re.findall(in_text, text_channels[t]))
             react_uses[e] += len(re.findall(in_react, text_channels[t]))
+            if include_vanilla_emotes and len(emotes[e]) == 1:
+                text_uses[e] += len(re.findall(in_text, text_channels[t]))-react_uses[e]
+            else:
+                text_uses[e] += len(re.findall(in_text, text_channels[t]))
 
     # print csv (usage count)
     with open(output_directory + filename, 'w+', newline='', encoding="utf8") as emote_usage_file:
