@@ -6,6 +6,7 @@ vanilla_emote_filepath = 'res/vanilla.csv'
 custom_emote_filepath = 'res/custom.csv'
 
 
+# TODO: overload constructor properly
 def run(input_directory, output_directory, filename):
     run_vanilla_check(input_directory, output_directory, filename, False)
 
