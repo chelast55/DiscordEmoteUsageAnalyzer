@@ -1,17 +1,15 @@
 import csv
-import os
 import re
 
-custom_emote_filepath = 'res/custom.csv'
+import io_helper as io
 
-def run(input_directory):
-    # TODO: refactor, code duplicate
+
+custom_emote_filepath = "res/custom.csv"
+
+
+def run(input_directory: str):
     # import discord channel text files
-    text_channels = []
-    for file in os.listdir(input_directory):
-        if file.endswith(".txt"):
-            with open(input_directory + file, "r", encoding="utf8") as text_file:
-                text_channels += [text_file.read()]
+    text_channels = io.read_input_files(input_directory)
 
     # scan all text channels for emotes or rather text surrounded by colons
     custom_emotes = set([])
@@ -21,7 +19,7 @@ def run(input_directory):
             custom_emotes.add(found_emote)
 
     # print csv (usage count)
-    with open(custom_emote_filepath, 'w+', newline='', encoding="utf8") as custom_emotes_file:
+    with open(custom_emote_filepath, 'w', newline='', encoding="utf8") as custom_emotes_file:
         emote_usage_writer = csv.writer(custom_emotes_file, delimiter=';')
         for custom_emote in custom_emotes:
             emote_usage_writer.writerow([custom_emote])
