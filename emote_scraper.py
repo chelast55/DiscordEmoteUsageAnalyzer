@@ -15,7 +15,7 @@ def run(input_directory: str):
     custom_emotes = set([])
     for text_channel in text_channels:
 
-        for found_emote in re.findall(re.compile(rf":([A-Za-z0-9_\-]+|{{Reactions}}[A-Za-z0-9_\-]+ ):"), text_channel):
+        for found_emote in re.findall(re.compile(rf":([A-Za-z0-9_\-][A-Za-z0-9_\-]+|{{Reactions}}\n[A-Za-z0-9_\-][A-Za-z0-9_\-]+ ):"), text_channel):
             custom_emotes.add(found_emote)
 
     # print csv (usage count)
