@@ -5,7 +5,6 @@ import io_helper as io
 
 
 split_directory = "split/"
-
 numerical_month = {"Jan": "01", "Feb": "02", "Mar": "03", "Apr": "04", "May": "05", "Jun": "06",
                    "Jul": "07", "Aug": "08", "Sep": "09", "Oct": "10", "Nov": "11", "Dec": "12"}
 
@@ -37,10 +36,10 @@ def run(input_directory: str):
         text_channels_recombined += [text_channel_recombined]
 
     # write split text channels to individual .txt files (by month)
-    io.create_filepath(split_directory)
+    io.create_filepath_if_not_exists(split_directory)
     for d in range(0, len(text_channels_recombined)):
         original_file_name = os.listdir(input_directory)[d]
-        io.create_filepath(split_directory + original_file_name[:(len(original_file_name) - 4)])
+        io.create_filepath_if_not_exists(split_directory + original_file_name[:(len(original_file_name) - 4)])
         for month_of_channel in text_channels_recombined[d]:
             with open(split_directory + original_file_name[:(len(original_file_name) - 4)] + '/'
                       + reformat_date(month_of_channel[:6]) + "_" + original_file_name, 'w',

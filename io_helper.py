@@ -3,7 +3,7 @@ import csv
 
 
 # create file at file path if not already exists
-def create_filepath(filepath: str):
+def create_filepath_if_not_exists(filepath: str):
     if not os.path.exists(filepath):
         os.mkdir(filepath)
 
@@ -11,6 +11,7 @@ def create_filepath(filepath: str):
 # read in file as list of its lines
 def read_emotes(emotes_filepath: str):
     emotes = []
+    create_filepath_if_not_exists(emotes_filepath)
     with open(emotes_filepath, encoding="utf8") as emote_file:
         emote_reader = csv.reader(emote_file)
         for row in emote_reader:

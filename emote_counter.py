@@ -6,6 +6,7 @@ from operator import add
 
 import io_helper as io
 
+
 vanilla_emote_filepath = "res/vanilla.csv"
 custom_emote_filepath = "res/custom.csv"
 max_threads = 8
@@ -15,29 +16,27 @@ def run(input_directory: str, output_directory: str, filename: str, include_vani
 
     # predefine counting functions for multi-threading
     def count_text_uses(emotes_partition: list, index: int):
-        text_uses = [0] * len(emotes)
         indent = index * (len(emotes) // max_threads)
-        for e in range(0, len(emotes_partitioned[i])):
+        for emote_position in range(0, len(emotes_partition)):
             # unicode emotes are never surrounded by colons in discord-chat-exporter's .txt format
-            if include_vanilla_emotes and len(emotes_partition[e]) == 1:
-                in_text = re.compile(rf"{re.escape(emotes_partition[e])}")
+            if include_vanilla_emotes and len(emotes_partition[emote_position]) == 1:
+                in_text = re.compile(rf"{re.escape(emotes_partition[emote_position])}")
             else:
-                in_text = re.compile(rf":{re.escape(emotes_partition[e])}:")
+                in_text = re.compile(rf":{re.escape(emotes_partition[emote_position])}:")
             for t in range(0, len(text_channels)):
-                text_uses[e+indent] += len(re.findall(in_text, text_channels[t]))
+                text_uses[emote_position+indent] += len(re.findall(in_text, text_channels[t]))
         return text_uses
 
     def count_react_uses(emotes_partition: list, index: int):
-        text_react = [0] * len(emotes)
         indent = index * (len(emotes) // max_threads)
-        for e in range(0, len(emotes_partition)):
-            in_react = re.compile(rf"{{Reactions}}\n.*{re.escape(emotes_partition[e])} ")
+        for emote_position in range(0, len(emotes_partition)):
+            in_react = re.compile(rf"{{Reactions}}\n.*{re.escape(emotes_partition[emote_position])} ")
             for t in range(0, len(text_channels)):
                 per_channel_react_uses = len(re.findall(in_react, text_channels[t]))
-                react_uses[e+indent] += per_channel_react_uses
+                react_uses[emote_position+indent] += per_channel_react_uses
                 # text and react uses for unicode emotes are indistinguishable, remove duplicate counts
-                if include_vanilla_emotes and len(emotes_partition[e]) == 1:
-                    text_uses[e+indent] -= per_channel_react_uses
+                if include_vanilla_emotes and len(emotes_partition[emote_position]) == 1:
+                    text_uses[emote_position+indent] -= per_channel_react_uses
         return react_uses
 
     # collect desired emotes
@@ -49,7 +48,7 @@ def run(input_directory: str, output_directory: str, filename: str, include_vani
     # ensure emote list is integer dividable by thread_count
     original_emote_count = len(emotes)
     for j in range(0, max_threads - (len(emotes) % max_threads)):
-        emotes += ["DUMMY_NOT_AN_EMOTE"] # nobody should use this as an emote ever
+        emotes += ["DUMMY_NOT_AN_EMOTE"]  # nobody should use this as an emote ever
 
     # import discord channel text files
     text_channels = io.read_input_files(input_directory)
