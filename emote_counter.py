@@ -1,6 +1,8 @@
 import csv
 import re
 import numpy
+from os import cpu_count
+from math import ceil
 from pathos.multiprocessing import ProcessPool
 from operator import add
 
@@ -9,10 +11,12 @@ import io_helper as io
 
 vanilla_emote_filepath = "res/vanilla.csv"
 custom_emote_filepath = "res/custom.csv"
-max_threads = 8
 
 
 def run(input_directory: str, output_directory: str, filename: str, include_vanilla_emotes: bool):
+
+    # set thread count to allow one parallel thread per logical cpu core in later emote counting step
+    max_threads = ceil(cpu_count()/2)
 
     # predefine counting functions for multi-threading
     def count_text_uses(emotes_partition: list, index: int):
